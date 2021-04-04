@@ -70,7 +70,41 @@ static int _count;
             var mensagem = $"Tempo: {time.Elapsed.ToString()}, {gerenciarEstado}, Numero Conexões abertas:{_count}";
             Console.WriteLine(mensagem);
         }
+        static void ExecuteSql(){
+            //Primeira opçao
+            using var db = new Curso.Data.ApplicatioContext();
+            using(var cmd = db.Database.GetDbConnection().CreateCommand()){
+                cmd.CommandText= "SELECT 1";
+                cmd.ExecuteNonQuery();
+            }
 
-        
+            //Segunda opção
+            var descricao = "TESTE";
+            db.Database.ExecuteSqlRaw("UPDATE departamentos SET descricao={0} WHERE ID=1",descricao);
+
+            //Terceira Opçao
+            db.Database.ExecuteSqlInterpolated($"UPDATE departamentos SET descricao={descricao} WHERE ID=1");
+        }
+
+
+        static void SqlInjection(){
+            using var db = new Curso.Data.ApplicatioContext();
+            EnsureDeleted();
+            EnsureDeleted();
+
+            var descricao = "Teste ' or 1='1";
+            db.Database.ExecuteSqlRaw($"UPDATE departamentos SET descricao='AtaqueInjection' WHERE descricao='{descricao}'");
+            foreach(var departamento in db.Departamentos.AsNoTracking()){
+                //Console.WriteLine($"id: {departamento.Id}, Descricao: {departamento.Name}");
+            }
+        }
+
+        static void DriblandoSqlInjection(){
+            using var db = new Curso.Data.ApplicatioContext();
+            var descricao = "nova";
+            db.Database.ExecuteSqlRaw("UPDATE departamentos SET descricao='{0}' WHERE Id=1",descricao);
+            
+        }
     }
+  
 }
