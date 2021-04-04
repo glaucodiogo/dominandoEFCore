@@ -9,7 +9,7 @@ namespace efcore
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
-            GapDoEnsureCreatedComMultiplosContextos();
+            HealthCheckBD();
         }
 
         //Logo que executa a aplicação ele executa o banco de dados , caso ele não exista
@@ -29,6 +29,17 @@ namespace efcore
 
             var databaseCreator = db2.GetService<IRelationalDatabaseCreator>();
             databaseCreator.CreateTables();
+        }
+
+        static void HealthCheckBD(){
+            using var db = new Curso.Data.ApplicatioContext();
+            var canConnect = db.Database.CanConnect();
+
+            if(canConnect){
+                Console.WriteLine("Conexão Liberada");
+            }else{
+                Console.WriteLine("Conexão não Liberada");
+            }
         }
     }
 }
