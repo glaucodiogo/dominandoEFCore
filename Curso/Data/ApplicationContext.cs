@@ -12,10 +12,10 @@ namespace Curso.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            const string strConnection = "Data source=localhost; Initial Catalog=dominandoEfCore;User ID=sa;Password=<YourStrong@Passw0rd>;Pooling=true;"
+            const string strConnection = "Data source=localhost; Initial Catalog=dominandoEfCore;User ID=sa;Password=<YourStrong@Passw0rd>;Pooling=true;";
             optionsBuilder.UseSqlServer(strConnection)
                           .EnableSensitiveDataLogging()
-                          .LogTo(Console.WriteLine,LogLevel.Information)
+                          .LogTo(Console.WriteLine,LogLevel.Information);
         }
     }
 }
