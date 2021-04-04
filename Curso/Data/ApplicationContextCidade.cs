@@ -10,10 +10,11 @@ namespace Curso.Data
         public DbSet<Cidade> Cidades {get;set;}
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            const string strConnection = "Data source=localhost; Initial Catalog=dominandoEfCore;User ID=sa;Password=<YourStrong@Passw0rd>;Pooling=true;";
+            //Com o pooling = true as consultas ficam ainda mais rápidas
+            const string strConnection = "Data source=localhost; Initial Catalog=dominandoEfCore;User ID=sa;Password=<YourStrong@Passw0rd>;Pooling=false;";
             optionsBuilder.UseSqlServer(strConnection)
-                          .EnableSensitiveDataLogging()
-                          .LogTo(Console.WriteLine,LogLevel.Information);
+                          .EnableSensitiveDataLogging();
+                          
         }
     }
 }

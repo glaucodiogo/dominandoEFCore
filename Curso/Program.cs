@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 
@@ -9,7 +11,10 @@ namespace efcore
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
-            HealthCheckBD();
+            _count =0;
+            GerenciarEstadoDaConexao(false);
+            _count =0;
+            GerenciarEstadoDaConexao(true);
         }
 
         //Logo que executa a aplicação ele executa o banco de dados , caso ele não exista
@@ -41,5 +46,31 @@ namespace efcore
                 Console.WriteLine("Conexão não Liberada");
             }
         }
+
+static int _count;
+        //Realizar a gestao da conexao é muito melhor que deixar na mão do ef. 
+        static void GerenciarEstadoDaConexao(bool gerenciarEstado){
+            using var db = new Curso.Data.ApplicatioContextCidade();
+            var time = System.Diagnostics.Stopwatch.StartNew();
+
+            var conexao = db.Database.GetDbConnection();
+
+            conexao.StateChange += (_,__) => ++_count;
+
+            if(gerenciarEstado){
+                conexao.Open();            
+            }
+
+            for(var i=0; i < 400;i++){
+                db.Cidades.AsNoTracking().Any();
+            }
+
+            time.Stop();
+
+            var mensagem = $"Tempo: {time.Elapsed.ToString()}, {gerenciarEstado}, Numero Conexões abertas:{_count}";
+            Console.WriteLine(mensagem);
+        }
+
+        
     }
 }
