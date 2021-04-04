@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Curso.Data
 {
-    public class ApplicatioContext : DbContext
+    public class ApplicationContext : DbContext
     {
         public DbSet<Departamento> Departamentos {get;set;}
         public DbSet<Funcionario> Funcionarios {get;set;}
