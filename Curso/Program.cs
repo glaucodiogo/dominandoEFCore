@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Curso.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -152,6 +154,67 @@ static int _count;
         static void ScriptGeralDoBancoDeDados(){
             using var db = new Curso.Data.ApplicationContext();
             var script = db.Database.GenerateCreateScript();
+        }
+        //Neste tipo de carregamento, é recomendável utilizar para carregamento de poucos campos
+        //pois o left join carrega a tabela toda de funcionarios, podendo acarretar lentidão
+        static void CarregamentoAdiantado(){
+            using var db = new Curso.Data.ApplicationContext();
+            SetupTiposCarregamentos(db);
+
+            //Toda vez que for carregar departamento, será carregado também funcionários.Todos funcionários são carregados
+            var departamentos = db.Departamentos
+                                  .Include(p=> p.Funcionarios);
+
+            foreach(var departamento in departamentos){
+                Console.WriteLine("---------------------------------");
+                Console.WriteLine($"Departamento: {departamento.Descricao}");
+
+                if(departamento.Funcionarios?.Any() ?? false){
+                    foreach(var funcionario in departamento.Funcionarios){
+                        Console.WriteLine($"\tFuncionario: {funcionario.Nome}");
+                    }
+                }else{
+                    Console.WriteLine($"\tNenhum funcionario encontrado!");
+                }
+            }
+        }
+
+
+        static void SetupTiposCarregamentos(Curso.Data.ApplicationContext db){
+            if(!db.Departamentos.Any()){
+                db.Departamentos.AddRange(
+                    new Departamento{
+                        Descricao = "Departamento 01",
+                        Funcionarios = new List<Funcionario>{
+                            new Funcionario{
+                                Nome = "Rafael Oliveira",
+                                Cpf  = "78946513245",
+                                Rg   = "123456"
+                            },
+                             new Funcionario{
+                                Nome = "Maria Oliveira",
+                                Cpf  = "7866663245",
+                                Rg   = "12000"
+                            }
+                        }
+                    },
+                    new Departamento{
+                        Descricao = "Departamento 02",
+                        Funcionarios = new List<Funcionario>{
+                            new Funcionario{
+                                Nome = "João Oliveira",
+                                Cpf  = "12346513245",
+                                Rg   = "444444"
+                            }
+                        }
+                    }
+                );
+
+                db.SaveChanges();
+                db.ChangeTracker.Clear();
+            }
+
+
         }
     }
   
