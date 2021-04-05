@@ -180,6 +180,24 @@ static int _count;
         }
 
 
+         static void CarregamentoExplicito(){
+            using var db = new Curso.Data.ApplicationContext();
+            SetupTiposCarregamentos(db);
+
+            //Toda vez que for carregar departamento, será carregado também funcionários.Todos funcionários são carregados
+            var departamentos = db.Departamentos.ToList();
+
+            foreach(var departamento in departamentos){
+                Console.WriteLine("---------------------------------");
+                Console.WriteLine($"Departamento: {departamento.Descricao}");
+
+                if(departamento.Id == 2){
+                    db.Entry(departamento).Collection(p => p.Funcionarios).Query().Where(p => p.Id > 2).ToList();
+                }
+            }
+        }
+
+       
         static void SetupTiposCarregamentos(Curso.Data.ApplicationContext db){
             if(!db.Departamentos.Any()){
                 db.Departamentos.AddRange(
@@ -217,5 +235,4 @@ static int _count;
 
         }
     }
-  
-}
+  }
