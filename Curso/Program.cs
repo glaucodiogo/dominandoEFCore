@@ -133,7 +133,7 @@ static int _count;
             Console.WriteLine($"Total: {migracoes.Count()}");
 
             foreach (var migracao in migracoes){
-                Console.WriteLine($"Migração: {migracao}")
+                Console.WriteLine($"Migração: {migracao}");
             }
         }
 
@@ -145,8 +145,13 @@ static int _count;
             Console.WriteLine($"Total: {migracoes.Count()}");
 
             foreach (var migracao in migracoes){
-                Console.WriteLine($"Migração: {migracao}")
+                Console.WriteLine($"Migração: {migracao}");
             }
+        }
+        //gera o script de todo o banco de dados
+        static void ScriptGeralDoBancoDeDados(){
+            using var db = new Curso.Data.ApplicationContext();
+            var script = db.Database.GenerateCreateScript();
         }
     }
   
