@@ -115,6 +115,27 @@ static int _count;
                 Console.WriteLine($"Migração: {migracao}");
             }
         }
+        //Para testar pode-se usar o comando para deletar a base
+        //dotnet ef database drop --context ApplicationContext
+        static void AplicarMigracaoEmTempoDeExecucao(){
+            using var db = new Curso.Data.ApplicationContext();
+            db.Database.Migrate();// verifica todas migracoes pendentes e aplica em tempo de execucao
+        }
+
+        //1- Adiciona nova propriedade na entidade
+        //2- Dotnet ef migrations add RG --context ApplicationContext
+        //3- Automaticamente o migrações é gerado baseado na alteração em dominio
+        static void RecuperaTodasMigracoes(){
+            using var db = new Curso.Data.ApplicationContext();
+            
+            var migracoes = db.Database.GetMigrations();
+
+            Console.WriteLine($"Total: {migracoes.Count()}");
+
+            foreach (var migracao in migracoes){
+                Console.WriteLine($"Migração: {migracao}")
+            }
+        }
     }
   
 }
