@@ -136,6 +136,18 @@ static int _count;
                 Console.WriteLine($"Migração: {migracao}")
             }
         }
+
+         static void MigracoesJaAplicadas(){
+            using var db = new Curso.Data.ApplicationContext();
+            
+            var migracoes = db.Database.GetAppliedMigrations();
+
+            Console.WriteLine($"Total: {migracoes.Count()}");
+
+            foreach (var migracao in migracoes){
+                Console.WriteLine($"Migração: {migracao}")
+            }
+        }
     }
   
 }
